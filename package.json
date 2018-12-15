@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "AWS_PROFILE=personal AWS_REGION=eu-west-1 node index.js"
+    "start": "AWS_PROFILE=default AWS_REGION=eu-west-1 node index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
     "aws-sdk": "^2.375.0"
   },
   "dependencies": {
+    "@aws/dynamodb-data-mapper": "^0.7.3",
     "uuid": "^3.3.2"
   }
 }

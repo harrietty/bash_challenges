@@ -1,5 +1,4 @@
 {
-  "id": 1,
   "title": "Sum of Agruments",
   "description": "Create a script that takes two arguments and prints the sum to stdout",
   "difficulty": 1,

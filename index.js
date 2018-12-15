@@ -1,60 +1,25 @@
 const AWS = require('aws-sdk');
+const {DataMapper} = require('@aws/dynamodb-data-mapper');
 const uuid = require('uuid/v4');
-const challenge = require('./challenges/1.json');
+const path = require('path');
+const Challenge = require('./challenge.model');
+const challengeNum = process.argv[2];
+if (challengeNum === undefined) throw new Error('Please provide a challenge number as an argument');
+const challenge = require(path.join(__dirname, 'challenges', `${challengeNum}.json`));
 
-var dynamodb = new AWS.DynamoDB({
+const dynamodb = new AWS.DynamoDB({
   logger: console,
 });
 
-const batchParams = {
-  RequestItems: {
-    challenges: [
-      {
-        PutRequest: {
-          Item: {
-            id: {
-              N: challenge.id.toString()
-            },
-            title: {
-              S: challenge.title
-            },
-            description: {
-              S: challenge.description
-            },
-            difficulty: {
-              N: challenge.difficulty.toString()
-            },
-            example_use: {
-              S: challenge.example_use
-            },
-            example_output: {
-              S: challenge.example_output
-            },
-          }
-        }
-      },
-    ],
-    challenge_tests: challenge.tests.map(test => ({
-      PutRequest: {
-        Item: {
-          id: {
-            N: Math.ceil(Math.random() * 100).toString()
-          },
-          challenge_id: {
-            N: challenge.id.toString()
-          },
-          input: {
-            S: test.input
-          },
-          output: {
-            S: test.output
-          }
-        }
-      }
-    }))
-  }
-}
+const mapper = new DataMapper({client: dynamodb});
 
-dynamodb.batchWriteItem(batchParams, (err, res) => {
-  console.log(err, res);
-});
+const c1 = new Challenge();
+c1.id = uuid();
+c1.description = challenge.description;
+c1.title = challenge.title;
+c1.difficulty = challenge.difficulty;
+c1.tests = challenge.tests;
+
+mapper.put(c1)
+  .then(console.log)
+  .catch(console.log);
