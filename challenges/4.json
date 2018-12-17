@@ -1,0 +1,14 @@
+{
+  "title": "Word Finder",
+  "description": "Create a script that searches for a word in a text file and prints the number of occurrences of that word to stdout. The script takes an option -s (the search term) and a filename",
+  "difficulty": 1,
+  "example_use": "$ ./script.sh -s monkey animals.txt",
+  "example_output": "11",
+  "tests": [
+    {
+      "input": "./script.sh -s bar words.txt",
+      "files": ["words.txt"],
+      "output": "5"
+    }
+  ]
+}

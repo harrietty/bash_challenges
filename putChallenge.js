@@ -1,7 +1,6 @@
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const {DataMapper} = require('@aws/dynamodb-data-mapper');
-const uuid = require('uuid/v4');
 const path = require('path');
 const Challenge = require('./models/challenge.model');
 const challengeNum = process.argv[2];
@@ -60,7 +59,7 @@ async function saveChallenge(challenge) {
   const mapper = new DataMapper({client: dynamodb});
 
   const c1 = new Challenge();
-  c1.id = uuid();
+  c1.id = challengeNum;
   c1.description = challenge.description;
   c1.title = challenge.title;
   c1.difficulty = challenge.difficulty;

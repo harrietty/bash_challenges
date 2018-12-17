@@ -6,7 +6,7 @@
   "example_output": "44 Marsha\n11 Pete\n10 Olivia\n6 Terry\n2 Anisa\n1 Flora",
   "tests": [
     {
-      "input": "./script names.txt",
+      "input": "./script.sh names.txt",
       "files": ["names.txt"],
       "output": "4 Pete\n3 Terry\n2 Olivia\n1 Marsha\n1 Anisa"
     }
