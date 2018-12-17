@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "AWS_PROFILE=default AWS_REGION=eu-west-1 node index.js"
+    "put": "AWS_PROFILE=default AWS_REGION=eu-west-1 node putChallenge.js",
+    "deploy": "serverless deploy",
+    "lint": "eslint ./"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk": "^2.375.0"
+    "aws-sdk": "^2.375.0",
+    "eslint": "^5.10.0",
+    "eslint-config-google": "^0.11.0",
+    "serverless": "^1.35.0"
   },
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",

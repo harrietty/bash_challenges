@@ -1,39 +1,40 @@
 const {DynamoDbSchema, DynamoDbTable} = require('@aws/dynamodb-data-mapper');
 
-class Challenge {
-
-}
+/**
+ * Base class for a Challenge object
+ */
+class Challenge {}
 
 Object.defineProperties(Challenge.prototype, {
   [DynamoDbTable]: {
-    value: 'bash_challenges'
+    value: 'bash_challenges',
   },
   [DynamoDbSchema]: {
     value: {
       id: {
         type: 'String',
-        keyType: 'HASH'
+        keyType: 'HASH',
       },
       title: {
-        type: 'String'
+        type: 'String',
       },
       description: {
-        type: 'String'
+        type: 'String',
       },
       difficulty: {
         type: 'Number',
       },
       exampleUse: {
-        type: 'String'
+        type: 'String',
       },
       exampleOutput: {
-        type: 'String'
+        type: 'String',
       },
       tests: {
-        type: 'Collection'
-      }
-    }
-  }
+        type: 'Collection',
+      },
+    },
+  },
 });
 
 module.exports = Challenge;

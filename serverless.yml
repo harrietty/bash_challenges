@@ -1,0 +1,67 @@
+service: bashChallenges
+
+provider:
+  name: aws
+  region: eu-west-1
+functions:
+  bashChallengesMainHandler:
+      handler: index.handler
+      name: bashChallengesAPI
+      description: Provides an API to Learn Bash website
+      runtime: nodejs8.10
+      memorySize: 512
+      events:
+      - http:
+          path: challenges
+          method: GET
+          cors: true
+
+resources:
+  Resources:
+    bashChallengesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: bash_challenges
+        AttributeDefinitions: # Definitions of attributes used for indexes or keys
+          - AttributeName: id
+            AttributeType: S
+        KeySchema: # The Primary Key for the table
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    bashChallengesAdditionalFilesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: 'bash-challenges-files'
+        CorsConfiguration:
+          CorsRules:
+            - 
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - HEAD
+    bashChallengesS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: 
+          Ref: 'bashChallengesAdditionalFilesBucket'
+        PolicyDocument:
+          Statement: 
+            -
+              Action:
+                - 's3:GetObject'
+              Effect: "Allow"
+              Resource:
+                Fn::Join: 
+                  - ""
+                  - 
+                    - "arn:aws:s3:::"
+                    - 
+                      Ref: 'bashChallengesAdditionalFilesBucket'
+                    - "/*"
+              Principal: "*"
