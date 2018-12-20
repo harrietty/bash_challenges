@@ -1,19 +1,33 @@
+const AWS = require('aws-sdk');
+
 /**
  * Handler function for API Gateway
  * @param {Object} event
  * @param {Object} context
  * @param {Function} callback
  */
-function handler(event, context, callback) {
-  const response = {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({'message': 'Hello World!'}),
-  };
+exports.handler = async (event, context, callback) => {
+  const dynamodb = new AWS.DynamoDB({
+    logger: console,
+  });
 
-  callback(null, response);
+  try {
+    const res = await dynamodb.scan({
+      TableName: 'bash_challenges',
+      ProjectionExpression: 'title, description, id, difficulty',
+    }).promise();
+    console.log(res);
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({challenges: res}),
+    };
+    callback(null, response);
+  } catch (e) {
+    console.log(e);
+    callback(e);
+  }
 };
-module.exports = handler;
