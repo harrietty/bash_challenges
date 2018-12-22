@@ -120,7 +120,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/bashChallenges/dev/1545472826504-2018-12-22T10:00:26.504Z/bashChallenges.zip"
+                "S3Key": "serverless/bashChallenges/dev/1545475840726-2018-12-22T10:50:40.726Z/bashChallenges.zip"
               },
               "FunctionName": "bashChallengesAPI",
               "Handler": "index.handler",
@@ -267,7 +267,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1545472826524": {
+          "ApiGatewayDeployment1545475840740": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -364,7 +364,7 @@
                     "ProjectionType": "ALL"
                   },
                   "ProvisionedThroughput": {
-                    "ReadCapacityUnits": 1,
+                    "ReadCapacityUnits": 5,
                     "WriteCapacityUnits": 1
                   }
                 }
@@ -557,7 +557,7 @@
                   "ProjectionType": "ALL"
                 },
                 "ProvisionedThroughput": {
-                  "ReadCapacityUnits": 1,
+                  "ReadCapacityUnits": 5,
                   "WriteCapacityUnits": 1
                 }
               }
@@ -624,7 +624,7 @@
     "artifact": "/Users/kodkodcat/projects/learn_bash_site/bash_challenges/.serverless/bashChallenges.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/bashChallenges/dev/1545472826504-2018-12-22T10:00:26.504Z",
+    "artifactDirectoryName": "serverless/bashChallenges/dev/1545475840726-2018-12-22T10:50:40.726Z",
     "artifact": "bashChallenges.zip"
   }
 }
