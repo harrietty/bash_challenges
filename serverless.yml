@@ -33,12 +33,24 @@ resources:
         AttributeDefinitions: # Definitions of attributes used for indexes or keys
           - AttributeName: id
             AttributeType: S
+          - AttributeName: difficulty
+            AttributeType: N
         KeySchema: # The Primary Key for the table
           - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: bash_challenges_by_difficulty
+            KeySchema:
+              - AttributeName: difficulty
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
     bashChallengesAdditionalFilesBucket:
       Type: AWS::S3::Bucket
       Properties:
