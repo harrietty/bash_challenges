@@ -71,6 +71,11 @@ exports.handler = async (event, context) => {
       'Access-Control-Allow-Origin': '*',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({challenges: res.Items}),
+    body: JSON.stringify({challenges: res.Items.map((item) => ({
+      title: item.title.S,
+      description: item.description.S,
+      difficulty: Number(item.difficulty.N),
+      id: item.id.S,
+    }))}),
   };
 };

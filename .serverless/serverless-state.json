@@ -78,7 +78,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*"
                           }
                         ]
                       },
@@ -89,19 +89,12 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*:*"
                           }
                         ]
                       },
                       {
-                        "Effect": "Allow",
-                        "Action": [
-                          "dynamodb:DescribeTable",
-                          "dynamodb:Query",
-                          "dynamodb:Scan",
-                          "dynamodb:GetItem"
-                        ],
-                        "Resource": "arn:aws:dynamodb:eu-west-1:*:table/bash_challenges*"
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
                       }
                     ]
                   }
@@ -128,7 +121,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/bashChallenges/dev/1545479164754-2018-12-22T11:46:04.754Z/bashChallenges.zip"
+                "S3Key": "serverless/bashChallenges/dev/1545548873752-2018-12-23T07:07:53.752Z/bashChallenges.zip"
               },
               "FunctionName": "getBashChallenges",
               "Handler": "index.handler",
@@ -148,21 +141,26 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "GetBashChallengesLambdaVersionbCMmcCtLNPT63hHitnCfBXrKPgl3DCbQldcuSjYWLI": {
+          "GetBashChallengesLambdaVersionxZw5zLkrTwCq7ViHigdpME3SXdd6P1inQGAKZQzI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetBashChallengesLambdaFunction"
               },
-              "CodeSha256": "bCMmcCtLNPT63hHitn+CfBXrKPgl3DCbQldcuSjYWLI=",
+              "CodeSha256": "xLhkNklcsEiuDtzkJXBeFsTwmmnXVPtT8OwIVVN3ObA=",
               "Description": "Gets all bash challenges or a subset based on difficulty"
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "dev-bashChallenges"
+              "Name": "dev-bashChallenges",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              }
             }
           },
           "ApiGatewayResourceChallenges": {
@@ -203,6 +201,7 @@
                 "RequestTemplates": {
                   "application/json": "{statusCode:200}"
                 },
+                "ContentHandling": "CONVERT_TO_TEXT",
                 "IntegrationResponses": [
                   {
                     "StatusCode": "200",
@@ -246,7 +245,11 @@
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:apigateway:",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
                       {
                         "Ref": "AWS::Region"
                       },
@@ -265,7 +268,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1545479164763": {
+          "ApiGatewayDeployment1545548873769": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -274,6 +277,7 @@
               "StageName": "dev"
             },
             "DependsOn": [
+              "ApiGatewayMethodChallengesOptions",
               "ApiGatewayMethodChallengesGet"
             ]
           },
@@ -287,12 +291,26 @@
                 ]
               },
               "Action": "lambda:InvokeFunction",
-              "Principal": "apigateway.amazonaws.com",
+              "Principal": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "apigateway.",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
               "SourceArn": {
                 "Fn::Join": [
                   "",
                   [
-                    "arn:aws:execute-api:",
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
                     {
                       "Ref": "AWS::Region"
                     },
@@ -417,7 +435,7 @@
           "GetBashChallengesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetBashChallengesLambdaVersionbCMmcCtLNPT63hHitnCfBXrKPgl3DCbQldcuSjYWLI"
+              "Ref": "GetBashChallengesLambdaVersionxZw5zLkrTwCq7ViHigdpME3SXdd6P1inQGAKZQzI"
             }
           },
           "ServiceEndpoint": {
@@ -430,7 +448,11 @@
                   {
                     "Ref": "ApiGatewayRestApi"
                   },
-                  ".execute-api.eu-west-1.amazonaws.com/dev"
+                  ".execute-api.eu-west-1.",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
                 ]
               ]
             }
@@ -458,6 +480,7 @@
     "plugins": [
       "serverless-offline"
     ],
+    "pluginsData": {},
     "functions": {
       "getBashChallenges": {
         "handler": "index.handler",
@@ -494,6 +517,8 @@
           }
         ],
         "package": {},
+        "memory": 512,
+        "timeout": 6,
         "vpc": {}
       }
     },
@@ -599,10 +624,11 @@
       },
       "Outputs": {}
     },
+    "layers": {},
     "artifact": "/Users/kodkodcat/projects/learn_bash_site/bash_challenges/.serverless/bashChallenges.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/bashChallenges/dev/1545479164754-2018-12-22T11:46:04.754Z",
+    "artifactDirectoryName": "serverless/bashChallenges/dev/1545548873752-2018-12-23T07:07:53.752Z",
     "artifact": "bashChallenges.zip"
   }
 }
