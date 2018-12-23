@@ -1,6 +1,6 @@
 {
   "title": "Greatest Argument",
-  "description": "Create a script that takes any number of arguments, all of which are numbers, and prints the sum to stdout",
+  "description": "Create a script that takes any number of arguments, all of which are numbers, and prints the greatest number to stdout",
   "difficulty": 1,
   "example_use": "$ ./script.sh 6 1 4 99 34 32 11",
   "example_output": "99",

@@ -13,9 +13,15 @@ exports.handler = async (event, context) => {
     query: event.queryStringParameters,
   });
 
-  const dynamodb = new AWS.DynamoDB({
+  const params = {
     logger: console,
-  });
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    params.endpoint = new AWS.Endpoint('http://localhost:8800');
+  }
+
+  const dynamodb = new AWS.DynamoDB(params);
 
   let res;
 

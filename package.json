@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "put": "AWS_PROFILE=default AWS_REGION=eu-west-1 node putChallenge.js",
-    "seed-dev": "node seed.js",
     "deploy": "serverless deploy",
-    "dev": "serverless offline -P 3456",
+    "dev": "NODE_ENV=development serverless offline -P 3456",
     "lint": "eslint ./"
   },
   "keywords": [],

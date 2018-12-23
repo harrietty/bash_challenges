@@ -23,5 +23,4 @@ To create the necessary local tables:
 
 To seed a local DynamoDB instance:
 
-    $ npm run seed-dev
-
+    $ node ./localLib/seed.js
