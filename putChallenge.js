@@ -64,6 +64,8 @@ async function saveChallenge(challenge) {
   c1.title = challenge.title;
   c1.difficulty = challenge.difficulty;
   c1.tests = challenge.tests;
+  c1.example_use = challenge.example_use;
+  c1.example_output = challenge.example_output;
 
   try {
     const res = await mapper.put(c1);

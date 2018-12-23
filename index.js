@@ -24,6 +24,14 @@ exports.handler = async (event, context) => {
   const dynamodb = new AWS.DynamoDB(params);
 
   let res;
+  const keys = [
+    'title',
+    'description',
+    'id',
+    'difficulty',
+    'example_use',
+    'example_output',
+  ].join(',');
 
   if (event.queryStringParameters && event.queryStringParameters.difficulty) {
     const difficulty = event.queryStringParameters.difficulty;
@@ -41,6 +49,7 @@ exports.handler = async (event, context) => {
     const query = {
       TableName: 'bash_challenges',
       IndexName: 'bash_challenges_by_difficulty',
+      ProjectionExpression: keys,
       KeyConditionExpression: 'difficulty = :difficulty',
       ExpressionAttributeValues: {
         ':difficulty': {
@@ -59,7 +68,7 @@ exports.handler = async (event, context) => {
   } else {
     const query = {
       TableName: 'bash_challenges',
-      ProjectionExpression: 'title, description, id, difficulty',
+      ProjectionExpression: keys,
     };
 
     console.log('Querying DyamoDB', {query});
@@ -82,6 +91,8 @@ exports.handler = async (event, context) => {
       description: item.description.S,
       difficulty: Number(item.difficulty.N),
       id: item.id.S,
+      exampleUse: item.example_use.S,
+      exampleOutput: item.example_output.S,
     }))}),
   };
 };

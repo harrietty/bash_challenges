@@ -23,4 +23,18 @@ To create the necessary local tables:
 
 To seed a local DynamoDB instance:
 
-    $ node ./localLib/seed.js
+    $ NODE_ENV=development node ./localLib/seed.js
+
+#### Production
+
+To add a new JSON file to the production database (including uploading associated files to S3), run:
+
+    $ NODE_ENV=production node putChallenge.js <challenge-number>
+
+Where `<challenge-number>` is the numeric name of the JSON file, e.g.:
+
+    $ NODE_ENV=production node putChallenge.js 6
+
+To update a challenge, simply run the same command:
+
+    $ NODE_ENV=production node putChallenge.js 6

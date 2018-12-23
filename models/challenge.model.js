@@ -24,10 +24,10 @@ Object.defineProperties(Challenge.prototype, {
       difficulty: {
         type: 'Number',
       },
-      exampleUse: {
+      example_use: {
         type: 'String',
       },
-      exampleOutput: {
+      example_output: {
         type: 'String',
       },
       tests: {

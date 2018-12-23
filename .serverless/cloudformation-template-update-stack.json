@@ -102,7 +102,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/bashChallenges/dev/1545548873752-2018-12-23T07:07:53.752Z/bashChallenges.zip"
+          "S3Key": "serverless/bashChallenges/dev/1545562316086-2018-12-23T10:51:56.086Z/bashChallenges.zip"
         },
         "FunctionName": "getBashChallenges",
         "Handler": "index.handler",
@@ -122,14 +122,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "GetBashChallengesLambdaVersionxZw5zLkrTwCq7ViHigdpME3SXdd6P1inQGAKZQzI": {
+    "GetBashChallengesLambdaVersiony3c5Ha5d8lyiqUtM48QLHF97ND6hIcNDXdQWyXPqxsM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetBashChallengesLambdaFunction"
         },
-        "CodeSha256": "xLhkNklcsEiuDtzkJXBeFsTwmmnXVPtT8OwIVVN3ObA=",
+        "CodeSha256": "u2J544r7t8de9SYE7AB/pd6NLlHatMA9sj+bk8ie/Y0=",
         "Description": "Gets all bash challenges or a subset based on difficulty"
       }
     },
@@ -249,7 +249,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1545548873769": {
+    "ApiGatewayDeployment1545562316103": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -416,7 +416,7 @@
     "GetBashChallengesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetBashChallengesLambdaVersionxZw5zLkrTwCq7ViHigdpME3SXdd6P1inQGAKZQzI"
+        "Ref": "GetBashChallengesLambdaVersiony3c5Ha5d8lyiqUtM48QLHF97ND6hIcNDXdQWyXPqxsM"
       }
     },
     "ServiceEndpoint": {

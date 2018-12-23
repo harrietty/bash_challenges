@@ -39,6 +39,8 @@ challenges.forEach(async (challenge, j) => {
   c1.title = data.title;
   c1.difficulty = Number(data.difficulty);
   c1.tests = data.tests;
+  c1.example_use = data.example_use;
+  c1.example_output = data.example_output;
 
   try {
     const res = await mapper.put(c1);
