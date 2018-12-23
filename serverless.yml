@@ -14,7 +14,7 @@ provider:
       Resource: arn:aws:dynamodb:eu-west-1:*:table/bash_challenges*
 functions:
   getBashChallenges:
-      handler: index.handler
+      handler: index.getAll
       name: getBashChallenges
       description: Gets all bash challenges or a subset based on difficulty
       runtime: nodejs8.10
@@ -24,6 +24,21 @@ functions:
           path: /challenges
           method: GET
           cors: true
+  getBashChallengeById:
+      handler: index.getById
+      name: getBashChallengeById
+      description: Gets an individual bash challenge based on its ID
+      runtime: nodejs8.10
+      memorySize: 512
+      events:
+      - http:
+          path: /challenges/{challengeId}
+          method: GET
+          cors: true
+          request:
+            parameters:
+              paths:
+                challengeId: true
 
 resources:
   Resources:

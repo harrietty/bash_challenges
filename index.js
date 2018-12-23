@@ -1,27 +1,27 @@
 const AWS = require('aws-sdk');
 
+const params = {
+  logger: console,
+};
+
+if (process.env.NODE_ENV === 'development') {
+  params.endpoint = new AWS.Endpoint('http://localhost:8800');
+}
+
+const dynamodb = new AWS.DynamoDB(params);
+
 /**
  * Handler function for API Gateway
  * @param {Object} event
  * @param {Object} context
  * @param {Function} callback
  */
-exports.handler = async (event, context) => {
+exports.getAll = async (event, context) => {
   console.log({
     path: event.path,
     params: event.pathParameters,
     query: event.queryStringParameters,
   });
-
-  const params = {
-    logger: console,
-  };
-
-  if (process.env.NODE_ENV === 'development') {
-    params.endpoint = new AWS.Endpoint('http://localhost:8800');
-  }
-
-  const dynamodb = new AWS.DynamoDB(params);
 
   let res;
   const keys = [
@@ -95,4 +95,62 @@ exports.handler = async (event, context) => {
       exampleOutput: item.example_output.S,
     }))}),
   };
+};
+
+exports.getById = async (event, context) => {
+  const id = event.pathParameters.challengeId;
+  if (isNaN(Number(id))) {
+    return {
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({messgae: 'Invalid id: must be a number'}),
+    };
+  }
+
+  const query = {
+    TableName: 'bash_challenges',
+    KeyConditionExpression: 'id = :id',
+    ExpressionAttributeValues: {
+      ':id': {
+        S: id,
+      },
+    },
+  };
+
+  try {
+    const res = await dynamodb.query(query).promise();
+    const challenge = res.Items[0];
+    if (!challenge) {
+      return {
+        statusCode: 404,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({challenge: {
+          title: challenge.title.S,
+          description: challenge.description.S,
+          example_use: challenge.example_use.S,
+          example_output: challenge.example_output.S,
+          id: challenge.id.S,
+          difficulty: challenge.difficulty.N,
+          tests: challenge.tests.L.map((test) => ({
+            input: test.M.input.S,
+            output: test.M.output.S,
+            files: test.M.files.L.map((file) => file.S),
+          })),
+        }}),
+      };
+    }
+  } catch (e) {
+    console.log('Error', {error: e});
+    throw new Error(e);
+  }
 };

@@ -11,6 +11,12 @@
         "LogGroupName": "/aws/lambda/getBashChallenges"
       }
     },
+    "GetBashChallengeByIdLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/getBashChallengeById"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -53,6 +59,9 @@
                   "Resource": [
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallengeById:*"
                     }
                   ]
                 },
@@ -64,6 +73,9 @@
                   "Resource": [
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*:*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallengeById:*:*"
                     }
                   ]
                 },
@@ -102,10 +114,10 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/bashChallenges/dev/1545562316086-2018-12-23T10:51:56.086Z/bashChallenges.zip"
+          "S3Key": "serverless/bashChallenges/dev/1545574498640-2018-12-23T14:14:58.640Z/bashChallenges.zip"
         },
         "FunctionName": "getBashChallenges",
-        "Handler": "index.handler",
+        "Handler": "index.getAll",
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
@@ -122,15 +134,53 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "GetBashChallengesLambdaVersiony3c5Ha5d8lyiqUtM48QLHF97ND6hIcNDXdQWyXPqxsM": {
+    "GetBashChallengesLambdaVersionb6Yep32Zg8XwZvZyrAUPDClvY2BCxIAWYfwXImA0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetBashChallengesLambdaFunction"
         },
-        "CodeSha256": "u2J544r7t8de9SYE7AB/pd6NLlHatMA9sj+bk8ie/Y0=",
+        "CodeSha256": "llxRJhXe/YiYNbmGXLdab4I7JqRv7Ovwt8WZMjYezCM=",
         "Description": "Gets all bash challenges or a subset based on difficulty"
+      }
+    },
+    "GetBashChallengeByIdLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/bashChallenges/dev/1545574498640-2018-12-23T14:14:58.640Z/bashChallenges.zip"
+        },
+        "FunctionName": "getBashChallengeById",
+        "Handler": "index.getById",
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs8.10",
+        "Timeout": 6,
+        "Description": "Gets an individual bash challenge based on its ID"
+      },
+      "DependsOn": [
+        "GetBashChallengeByIdLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "GetBashChallengeByIdLambdaVersionjdO1xv4vLddUmkgt1C2th6vi6PpkhsHoRlEQWlM8Q": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetBashChallengeByIdLambdaFunction"
+        },
+        "CodeSha256": "llxRJhXe/YiYNbmGXLdab4I7JqRv7Ovwt8WZMjYezCM=",
+        "Description": "Gets an individual bash challenge based on its ID"
       }
     },
     "ApiGatewayRestApi": {
@@ -154,6 +204,18 @@
           ]
         },
         "PathPart": "challenges",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceChallengesChallengeidVar": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceChallenges"
+        },
+        "PathPart": "{challengeId}",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -206,6 +268,53 @@
         }
       }
     },
+    "ApiGatewayMethodChallengesChallengeidVarOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'",
+                "method.response.header.Access-Control-Allow-Credentials": "'false'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceChallengesChallengeidVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
     "ApiGatewayMethodChallengesGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -249,7 +358,52 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1545562316103": {
+    "ApiGatewayMethodChallengesChallengeidVarGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {
+          "method.request.path.challengeId": true
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceChallengesChallengeidVar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetBashChallengeByIdLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      }
+    },
+    "ApiGatewayDeployment1545574498680": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -259,7 +413,9 @@
       },
       "DependsOn": [
         "ApiGatewayMethodChallengesOptions",
-        "ApiGatewayMethodChallengesGet"
+        "ApiGatewayMethodChallengesChallengeidVarOptions",
+        "ApiGatewayMethodChallengesGet",
+        "ApiGatewayMethodChallengesChallengeidVarGet"
       ]
     },
     "GetBashChallengesLambdaPermissionApiGateway": {
@@ -268,6 +424,53 @@
         "FunctionName": {
           "Fn::GetAtt": [
             "GetBashChallengesLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "apigateway.",
+              {
+                "Ref": "AWS::URLSuffix"
+              }
+            ]
+          ]
+        },
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "GetBashChallengeByIdLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetBashChallengeByIdLambdaFunction",
             "Arn"
           ]
         },
@@ -416,7 +619,13 @@
     "GetBashChallengesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetBashChallengesLambdaVersiony3c5Ha5d8lyiqUtM48QLHF97ND6hIcNDXdQWyXPqxsM"
+        "Ref": "GetBashChallengesLambdaVersionb6Yep32Zg8XwZvZyrAUPDClvY2BCxIAWYfwXImA0"
+      }
+    },
+    "GetBashChallengeByIdLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetBashChallengeByIdLambdaVersionjdO1xv4vLddUmkgt1C2th6vi6PpkhsHoRlEQWlM8Q"
       }
     },
     "ServiceEndpoint": {
