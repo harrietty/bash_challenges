@@ -5,10 +5,10 @@
     "ServerlessDeploymentBucket": {
       "Type": "AWS::S3::Bucket"
     },
-    "BashChallengesMainHandlerLogGroup": {
+    "GetBashChallengesLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/bashChallengesAPI"
+        "LogGroupName": "/aws/lambda/getBashChallenges"
       }
     },
     "IamRoleLambdaExecution": {
@@ -52,7 +52,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bashChallengesAPI:*"
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*"
                     }
                   ]
                 },
@@ -63,7 +63,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/bashChallengesAPI:*:*"
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getBashChallenges:*:*"
                     }
                   ]
                 },
@@ -75,7 +75,7 @@
                     "dynamodb:Scan",
                     "dynamodb:GetItem"
                   ],
-                  "Resource": "arn:aws:dynamodb:eu-west-1:*:table/bash_challenges"
+                  "Resource": "arn:aws:dynamodb:eu-west-1:*:table/bash_challenges*"
                 }
               ]
             }
@@ -95,16 +95,16 @@
         }
       }
     },
-    "BashChallengesMainHandlerLambdaFunction": {
+    "GetBashChallengesLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/bashChallenges/dev/1545475840726-2018-12-22T10:50:40.726Z/bashChallenges.zip"
+          "S3Key": "serverless/bashChallenges/dev/1545479164754-2018-12-22T11:46:04.754Z/bashChallenges.zip"
         },
-        "FunctionName": "bashChallengesAPI",
+        "FunctionName": "getBashChallenges",
         "Handler": "index.handler",
         "MemorySize": 512,
         "Role": {
@@ -115,33 +115,28 @@
         },
         "Runtime": "nodejs8.10",
         "Timeout": 6,
-        "Description": "Provides an API to Learn Bash website"
+        "Description": "Gets all bash challenges or a subset based on difficulty"
       },
       "DependsOn": [
-        "BashChallengesMainHandlerLogGroup",
+        "GetBashChallengesLogGroup",
         "IamRoleLambdaExecution"
       ]
     },
-    "BashChallengesMainHandlerLambdaVersion8C5nUKxenGO9qI8pBOYLc0Rlz3oqRmc8uaaYFhgLl0": {
+    "GetBashChallengesLambdaVersionbCMmcCtLNPT63hHitnCfBXrKPgl3DCbQldcuSjYWLI": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "BashChallengesMainHandlerLambdaFunction"
+          "Ref": "GetBashChallengesLambdaFunction"
         },
-        "CodeSha256": "x1s94aVF69T4oaXk5s5b0TiqN0qpU6IWQ9RnbrYJUE4=",
-        "Description": "Provides an API to Learn Bash website"
+        "CodeSha256": "bCMmcCtLNPT63hHitn+CfBXrKPgl3DCbQldcuSjYWLI=",
+        "Description": "Gets all bash challenges or a subset based on difficulty"
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-bashChallenges",
-        "EndpointConfiguration": {
-          "Types": [
-            "EDGE"
-          ]
-        }
+        "Name": "dev-bashChallenges"
       }
     },
     "ApiGatewayResourceChallenges": {
@@ -182,7 +177,6 @@
           "RequestTemplates": {
             "application/json": "{statusCode:200}"
           },
-          "ContentHandling": "CONVERT_TO_TEXT",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -226,18 +220,14 @@
             "Fn::Join": [
               "",
               [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":apigateway:",
+                "arn:aws:apigateway:",
                 {
                   "Ref": "AWS::Region"
                 },
                 ":lambda:path/2015-03-31/functions/",
                 {
                   "Fn::GetAtt": [
-                    "BashChallengesMainHandlerLambdaFunction",
+                    "GetBashChallengesLambdaFunction",
                     "Arn"
                   ]
                 },
@@ -249,7 +239,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1545475840740": {
+    "ApiGatewayDeployment1545479164763": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -258,40 +248,25 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodChallengesOptions",
         "ApiGatewayMethodChallengesGet"
       ]
     },
-    "BashChallengesMainHandlerLambdaPermissionApiGateway": {
+    "GetBashChallengesLambdaPermissionApiGateway": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "BashChallengesMainHandlerLambdaFunction",
+            "GetBashChallengesLambdaFunction",
             "Arn"
           ]
         },
         "Action": "lambda:InvokeFunction",
-        "Principal": {
-          "Fn::Join": [
-            "",
-            [
-              "apigateway.",
-              {
-                "Ref": "AWS::URLSuffix"
-              }
-            ]
-          ]
-        },
+        "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Join": [
             "",
             [
-              "arn:",
-              {
-                "Ref": "AWS::Partition"
-              },
-              ":execute-api:",
+              "arn:aws:execute-api:",
               {
                 "Ref": "AWS::Region"
               },
@@ -413,10 +388,10 @@
         "Ref": "ServerlessDeploymentBucket"
       }
     },
-    "BashChallengesMainHandlerLambdaFunctionQualifiedArn": {
+    "GetBashChallengesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "BashChallengesMainHandlerLambdaVersion8C5nUKxenGO9qI8pBOYLc0Rlz3oqRmc8uaaYFhgLl0"
+        "Ref": "GetBashChallengesLambdaVersionbCMmcCtLNPT63hHitnCfBXrKPgl3DCbQldcuSjYWLI"
       }
     },
     "ServiceEndpoint": {
@@ -429,11 +404,7 @@
             {
               "Ref": "ApiGatewayRestApi"
             },
-            ".execute-api.eu-west-1.",
-            {
-              "Ref": "AWS::URLSuffix"
-            },
-            "/dev"
+            ".execute-api.eu-west-1.amazonaws.com/dev"
           ]
         ]
       }
